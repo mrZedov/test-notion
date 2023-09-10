@@ -1,18 +1,18 @@
-import { Controller } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Post } from '@nestjs/common';
+import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { PromoCodeCrudService } from './services/promo-code-crud.service';
+import { PromoCodeCreateRequestDto, PromoCodeCreateResponseDto } from './dto/promo-code-create.dto';
 
-@ApiTags('Files')
-@Controller()
-export class FilesController {
-//  constructor(private readonly filesService: FilesService) {}
+@ApiTags('promo-code')
+@Controller('promo-code')
+export class PromoCodeController {
+  constructor(private readonly promoCodeCrudService: PromoCodeCrudService) {}
 
-  // @Post('file-upload')
-  // @ApiOperation({ description: 'Upload file CSV' })
-  // @ApiOkResponse({ type: GetRandomDataResultDto })
-  // @ApiBearerAuth('access-token')
-  // @ApiConsumes('multipart/form-data')
-  // @ApiBody({ schema: { type: 'object', properties: { file: { type: 'string', format: 'binary' } } } })
-  // async uploadFile(@UploadedFile(FileSizeValidationPipe, FileTypeValidationPipe) file) {
-  //   return await this.filesService.uploadFile(file.buffer);
-  // }
+  @Post()
+  @ApiOperation({ description: 'create promo code' })
+  @ApiOkResponse({ type: PromoCodeCreateResponseDto })
+  @ApiBody({ type: PromoCodeCreateRequestDto })
+  async post(@Body() dto: PromoCodeCreateRequestDto) {
+    return await this.promoCodeCrudService.create(dto);
+  }
 }
