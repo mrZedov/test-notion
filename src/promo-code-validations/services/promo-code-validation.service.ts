@@ -40,12 +40,14 @@ export class PromoCodeValidationService {
     const key = _.keys(restriction)[0];
 
     if (key === '@or') {
+      let reasons = [];
       const restrictions = restriction[key];
       for (const restriction of restrictions) {
         const res = this.isConditionValid(data, restriction);
         if (res.valid) return res;
+        else reasons = reasons.concat(res.reason);
       }
-      return { valid: false, restrictions: { [key]: restrictions } };
+      return { valid: false, reason: reasons, restrictions: { [key]: restrictions } };
     }
 
     if (key === '@and') {
@@ -82,7 +84,7 @@ export class PromoCodeValidationService {
     if (condition['before'] && value > new Date(condition['before']))
       return { isValid: false, reason: expression + ' greater than ' + condition['before'] };
     if (condition['lt'] && value > condition['lt']) return { isValid: false, reason: expression + ' greater than ' + condition['lt'] };
-    if (condition['gt'] && value < condition['gt']) return { isValid: false, reason: expression + ' greater than ' + condition['gt'] };
+    if (condition['gt'] && value < condition['gt']) return { isValid: false, reason: expression + ' less than ' + condition['gt'] };
     if (condition['eq'] && value !== condition['eq']) return { isValid: false, reason: expression + ' not equal ' + condition['eq'] };
     if (condition['is'] && value !== condition['is']) return { isValid: false, reason: expression + ' is not ' + condition['is'] };
     return { isValid: true };
